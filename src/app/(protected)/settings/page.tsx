@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/auth";
+import { LastFmArtistsPanel } from "@/components/taste/lastfm-artists-panel";
+import { SpotifyArtistsPanel } from "@/components/taste/spotify-artists-panel";
 import { getIntegrations } from "@/lib/integration-store";
 
 type SettingsPageProps = {
@@ -32,8 +34,8 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     <section className="rounded-xl border border-slate-800 bg-slate-900 p-6">
       <h1 className="text-2xl font-semibold">Account Settings</h1>
       <p className="mt-2 text-sm text-slate-300">
-        Connect Spotify and Last.fm to import your listening profile for concert matching (taste import
-        comes next).
+        Connect Spotify and Last.fm to import your listening profile. After linking, your top artists
+        appear below each service for a quick taste check.
       </p>
 
       {spotifyStatus === "connected" ? (
@@ -86,22 +88,25 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-4">
           <h2 className="text-lg font-semibold text-slate-100">Spotify</h2>
           {integrations.spotify ? (
-            <div className="mt-3 space-y-2 text-sm text-slate-300">
-              <p>
-                Connected as{" "}
-                <span className="font-medium text-slate-100">
-                  {integrations.spotify.displayName ?? integrations.spotify.spotifyUserId}
-                </span>
-              </p>
-              <form action="/api/integrations/spotify/disconnect" method="post">
-                <button
-                  type="submit"
-                  className="rounded-md border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm font-medium text-rose-100 hover:bg-rose-500/25"
-                >
-                  Disconnect Spotify
-                </button>
-              </form>
-            </div>
+            <>
+              <div className="mt-3 space-y-2 text-sm text-slate-300">
+                <p>
+                  Connected as{" "}
+                  <span className="font-medium text-slate-100">
+                    {integrations.spotify.displayName ?? integrations.spotify.spotifyUserId}
+                  </span>
+                </p>
+                <form action="/api/integrations/spotify/disconnect" method="post">
+                  <button
+                    type="submit"
+                    className="rounded-md border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm font-medium text-rose-100 hover:bg-rose-500/25"
+                  >
+                    Disconnect Spotify
+                  </button>
+                </form>
+              </div>
+              <SpotifyArtistsPanel />
+            </>
           ) : (
             <div className="mt-3">
               <Link
@@ -117,20 +122,23 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-4">
           <h2 className="text-lg font-semibold text-slate-100">Last.fm</h2>
           {integrations.lastfm ? (
-            <div className="mt-3 space-y-2 text-sm text-slate-300">
-              <p>
-                Connected as{" "}
-                <span className="font-medium text-slate-100">{integrations.lastfm.username}</span>
-              </p>
-              <form action="/api/integrations/lastfm/disconnect" method="post">
-                <button
-                  type="submit"
-                  className="rounded-md border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm font-medium text-rose-100 hover:bg-rose-500/25"
-                >
-                  Disconnect Last.fm
-                </button>
-              </form>
-            </div>
+            <>
+              <div className="mt-3 space-y-2 text-sm text-slate-300">
+                <p>
+                  Connected as{" "}
+                  <span className="font-medium text-slate-100">{integrations.lastfm.username}</span>
+                </p>
+                <form action="/api/integrations/lastfm/disconnect" method="post">
+                  <button
+                    type="submit"
+                    className="rounded-md border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm font-medium text-rose-100 hover:bg-rose-500/25"
+                  >
+                    Disconnect Last.fm
+                  </button>
+                </form>
+              </div>
+              <LastFmArtistsPanel />
+            </>
           ) : (
             <div className="mt-3">
               <Link
