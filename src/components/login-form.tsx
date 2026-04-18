@@ -67,7 +67,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
             aria-expanded={emailSignInOpen}
             aria-controls="email-sign-in-panel"
             onClick={() => setEmailSignInOpen((open) => !open)}
-            className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-left text-sm font-semibold text-slate-100 hover:bg-slate-700"
+            className="flex w-full items-center justify-center rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-center text-sm font-semibold text-slate-100 hover:bg-slate-700"
           >
             Sign in with email and password
           </button>
