@@ -47,7 +47,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Signup at `/signup` (min 8 character password); users stored in `data/users.json`
   (gitignored). Use a real database in production.
 - Root route `/` redirects to `/login` (or `/dashboard` if authenticated)
-- Settings page includes account-linking placeholders for Spotify / Last.fm
+- Settings page can **connect Spotify** and **Last.fm** (OAuth / web auth); tokens stored locally in
+  `data/user-integrations.json` (see `/data/` gitignore)
 
 ### Auth environment variables
 
@@ -91,8 +92,31 @@ with Google use the **same OAuth flow**; new Google users get a session on first
 
 Button styling follows [Sign in with Google branding guidelines](https://developers.google.com/identity/branding-guidelines).
 
+### Spotify account linking
+
+Used to read top artists later (`user-top-read` scope). Create an app in the
+[Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+
+1. **Redirect URI** (must match `.env.local` exactly):
+
+   `http://localhost:3000/api/integrations/spotify/callback`
+
+2. Add the same origin under **Redirect URIs** for production when you deploy.
+3. Copy **Client ID** and **Client secret** into `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
+4. Set `SPOTIFY_REDIRECT_URI` to the same callback URL as in the dashboard.
+
+### Last.fm account linking
+
+Create an API key on [Last.fm API account](https://www.last.fm/api/account/create).
+
+1. Set **Authorized callback URL** to the same value as `LASTFM_REDIRECT_URI`, e.g.:
+
+   `http://localhost:3000/api/integrations/lastfm/callback`
+
+2. Put **API Key** and **Shared secret** into `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
+
 ## Next implementation steps
 
-- Add Spotify / Last.fm account linking
+- Import and merge Spotify / Last.fm top artists into a taste profile (top 50 cap)
 - Replace mock data with API + database-backed events
 - Add real marker clustering and event detail routes
