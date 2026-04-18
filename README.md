@@ -55,11 +55,41 @@ Copy `.env.example` to `.env.local` and fill values:
 
 ```bash
 AUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
 AUTH_GOOGLE_ID=...
 AUTH_GOOGLE_SECRET=...
 AUTH_DEMO_EMAIL=...
 AUTH_DEMO_PASSWORD=...
 ```
+
+### Google sign-in / sign-up (OAuth)
+
+The app uses [NextAuth.js](https://next-auth.js.org/) with the Google provider. **Sign in** and **Sign up**
+with Google use the **same OAuth flow**; new Google users get a session on first use.
+
+**What you need to do:**
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and select or create a project.
+2. Go to **APIs & Services** → **OAuth consent screen**. Choose **External** (unless you use a Workspace
+   org-only app), fill the app name and support email, and add scopes if prompted (defaults are enough for
+   email/profile).
+3. Go to **APIs & Services** → **Credentials** → **Create credentials** → **OAuth client ID**.
+4. Application type: **Web application**.
+5. **Authorized JavaScript origins** (add your real URLs):
+   - Local: `http://localhost:3000`
+   - Production: `https://your-domain.com`
+6. **Authorized redirect URIs** — add exactly (replace host for production):
+
+   `http://localhost:3000/api/auth/callback/google`
+
+7. Copy the **Client ID** and **Client secret** into `.env.local` as `AUTH_GOOGLE_ID` and
+   `AUTH_GOOGLE_SECRET`.
+8. Set `NEXTAUTH_URL` to the same origin as the app (e.g. `http://localhost:3000` locally, or your
+   production URL). This is required for OAuth redirect URLs to resolve correctly.
+9. While the OAuth app is in **Testing**, add your Google account under **Test users** on the consent
+   screen so you can sign in.
+
+Button styling follows [Sign in with Google branding guidelines](https://developers.google.com/identity/branding-guidelines).
 
 ## Next implementation steps
 
