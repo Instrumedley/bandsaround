@@ -25,6 +25,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Google-branded buttons: Roboto Medium 14/20 per branding guidelines */
+.google-brand-btn {
+  font-family: var(--font-roboto-medium), ui-sans-serif, system-ui, sans-serif;
+}
+
 .band-label-pin {
   display: flex;
   align-items: center;
