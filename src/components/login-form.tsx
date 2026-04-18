@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type LoginFormProps = {
   callbackUrl: string;
@@ -10,6 +11,8 @@ type LoginFormProps = {
 
 export function LoginForm({ callbackUrl }: LoginFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const showRegisteredNotice = searchParams.get("registered") === "1";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +51,19 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       <p className="mt-2 text-sm text-slate-300">
         Use Google or email/password. After login, you can connect Spotify and Last.fm in settings.
       </p>
+
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href="/signup"
+          className="inline-flex w-full items-center justify-center rounded-md border border-slate-600 bg-slate-800 px-4 py-2 text-center text-sm font-semibold text-slate-100 hover:bg-slate-700 sm:w-auto"
+        >
+          Create account
+        </Link>
+      </div>
+
+      {showRegisteredNotice ? (
+        <p className="mt-3 text-sm text-emerald-300">Account created. Please sign in.</p>
+      ) : null}
 
       <button
         type="button"

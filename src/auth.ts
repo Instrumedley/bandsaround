@@ -1,6 +1,8 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import bcrypt from "bcryptjs";
+import { findUserByEmail } from "@/lib/user-store";
 
 const demoEmail = process.env.AUTH_DEMO_EMAIL ?? "demo@bandsaround.app";
 const demoPassword = process.env.AUTH_DEMO_PASSWORD ?? "demo-password-change-me";
@@ -30,15 +32,29 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        if (email !== demoEmail || password !== demoPassword) {
-          return null;
+        const stored = await findUserByEmail(email);
+        if (stored) {
+          const valid = await bcrypt.compare(password, stored.passwordHash);
+          if (!valid) {
+            return null;
+          }
+
+          return {
+            id: stored.id,
+            name: email.split("@")[0] ?? "User",
+            email: stored.email,
+          };
         }
 
-        return {
-          id: "demo-user",
-          name: "Demo User",
-          email: demoEmail,
-        };
+        if (email === demoEmail && password === demoPassword) {
+          return {
+            id: "demo-user",
+            name: "Demo User",
+            email: demoEmail,
+          };
+        }
+
+        return null;
       },
     }),
   ],

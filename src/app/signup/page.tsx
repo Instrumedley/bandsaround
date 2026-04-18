@@ -1,15 +1,14 @@
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/auth";
-import { LoginForm } from "@/components/login-form";
+import { SignupForm } from "@/components/signup-form";
 
-type LoginPageProps = {
+type SignupPageProps = {
   searchParams: Promise<{
     callbackUrl?: string;
   }>;
 };
 
-export default async function LoginPage({ searchParams }: LoginPageProps) {
+export default async function SignupPage({ searchParams }: SignupPageProps) {
   const session = await getServerAuthSession();
 
   if (session) {
@@ -21,9 +20,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
-      <Suspense fallback={<div className="text-sm text-slate-400">Loading...</div>}>
-        <LoginForm callbackUrl={safeCallbackUrl} />
-      </Suspense>
+      <SignupForm callbackUrl={safeCallbackUrl} />
     </main>
   );
 }

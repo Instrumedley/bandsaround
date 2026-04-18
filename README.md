@@ -43,6 +43,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Login page at `/login` with:
   - Continue with Google
   - Email/password sign-in form
+  - Button linking to `/signup`
+- Signup at `/signup` (min 8 character password); users stored in `data/users.json`
+  (gitignored). Use a real database in production.
 - Root route `/` redirects to `/login` (or `/dashboard` if authenticated)
 - Settings page includes account-linking placeholders for Spotify / Last.fm
 
