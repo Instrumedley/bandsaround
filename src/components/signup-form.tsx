@@ -4,12 +4,14 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { GoogleBrandButton } from "@/components/google-brand-button";
 
 type SignupFormProps = {
   callbackUrl: string;
+  googleOAuthConfigured: boolean;
 };
 
-export function SignupForm({ callbackUrl }: SignupFormProps) {
+export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,14 +70,42 @@ export function SignupForm({ callbackUrl }: SignupFormProps) {
     router.refresh();
   }
 
+  function handleGoogleSignup() {
+    if (!googleOAuthConfigured) {
+      return;
+    }
+    void signIn("google", { callbackUrl });
+  }
+
   return (
     <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
       <h1 className="text-2xl font-semibold">Create your account</h1>
       <p className="mt-2 text-sm text-slate-300">
-        Sign up with email and password. You can connect Spotify and Last.fm after you sign in.
+        Sign up with Google or email and password. You can connect Spotify and Last.fm after you sign
+        in.
       </p>
 
-      <form onSubmit={handleSignup} className="mt-6 space-y-3">
+      <div className="mt-6 flex flex-col gap-3">
+        {googleOAuthConfigured ? (
+          <GoogleBrandButton label="Sign up with Google" onClick={handleGoogleSignup} />
+        ) : (
+          <p className="text-center text-xs text-slate-500">
+            Google sign-up is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET in{" "}
+            <code className="text-slate-400">.env.local</code>.
+          </p>
+        )}
+      </div>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center" aria-hidden>
+          <div className="w-full border-t border-slate-700" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase tracking-wide text-slate-500">
+          <span className="bg-slate-900 px-2">Or register with email</span>
+        </div>
+      </div>
+
+      <form onSubmit={handleSignup} className="space-y-3">
         <label className="flex flex-col gap-1 text-sm">
           Email
           <input

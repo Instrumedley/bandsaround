@@ -8,9 +8,10 @@ import { GoogleBrandButton } from "@/components/google-brand-button";
 
 type LoginFormProps = {
   callbackUrl: string;
+  googleOAuthConfigured: boolean;
 };
 
-export function LoginForm({ callbackUrl }: LoginFormProps) {
+export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const showRegisteredNotice = searchParams.get("registered") === "1";
@@ -44,6 +45,9 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
   }
 
   function handleGoogleAuth() {
+    if (!googleOAuthConfigured) {
+      return;
+    }
     void signIn("google", { callbackUrl });
   }
 
@@ -122,7 +126,14 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
             ) : null}
           </div>
 
-          <GoogleBrandButton label="Sign in with Google" onClick={handleGoogleAuth} />
+          {googleOAuthConfigured ? (
+            <GoogleBrandButton label="Sign in with Google" onClick={handleGoogleAuth} />
+          ) : (
+            <p className="text-center text-xs text-slate-500">
+              Google sign-in is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET
+              in <code className="text-slate-400">.env.local</code>.
+            </p>
+          )}
         </div>
       </section>
 
@@ -142,7 +153,13 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
             Sign up with email and password
           </Link>
 
-          <GoogleBrandButton label="Sign up with Google" onClick={handleGoogleAuth} />
+          {googleOAuthConfigured ? (
+            <GoogleBrandButton label="Sign up with Google" onClick={handleGoogleAuth} />
+          ) : (
+            <p className="text-center text-xs text-slate-500">
+              Google sign-up uses the same OAuth flow as sign-in once OAuth env vars are set.
+            </p>
+          )}
         </div>
       </section>
     </div>
