@@ -22,6 +22,7 @@
 
 # misc
 .DS_Store
+.idea/
 *.pem
 
 # debug
@@ -32,6 +33,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local user store (signup; replace with DB in production)
+/data/
 
 # vercel
 .vercel
