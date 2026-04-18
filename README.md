@@ -34,9 +34,35 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Top-50 artist cap applied in filtering
 - Configurable map clustering threshold constant (`MAP_CLUSTER_THRESHOLD`, default `10`)
 
+## Auth foundation
+
+- NextAuth setup with Google + Credentials providers
+- Protected routes:
+  - `/dashboard`
+  - `/settings`
+- Login page at `/login` with:
+  - Continue with Google
+  - Email/password sign-in form
+  - Button linking to `/signup`
+- Signup at `/signup` (min 8 character password); users stored in `data/users.json`
+  (gitignored). Use a real database in production.
+- Root route `/` redirects to `/login` (or `/dashboard` if authenticated)
+- Settings page includes account-linking placeholders for Spotify / Last.fm
+
+### Auth environment variables
+
+Copy `.env.example` to `.env.local` and fill values:
+
+```bash
+AUTH_SECRET=...
+AUTH_GOOGLE_ID=...
+AUTH_GOOGLE_SECRET=...
+AUTH_DEMO_EMAIL=...
+AUTH_DEMO_PASSWORD=...
+```
+
 ## Next implementation steps
 
-- Add app auth (Google + email/password)
 - Add Spotify / Last.fm account linking
 - Replace mock data with API + database-backed events
 - Add real marker clustering and event detail routes
