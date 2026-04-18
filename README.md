@@ -22,7 +22,8 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (recommended when using Spotify linking) or
+[http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## What is implemented now
 
@@ -97,13 +98,27 @@ Button styling follows [Sign in with Google branding guidelines](https://develop
 Used to read top artists later (`user-top-read` scope). Create an app in the
 [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
 
-1. **Redirect URI** (must match `.env.local` exactly):
+Spotify’s rules for redirect URIs are strict: **`localhost` is not allowed**; you must use an explicit
+loopback IP such as **`127.0.0.1`**. See Spotify’s [Redirect URIs](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri) documentation.
 
-   `http://localhost:3000/api/integrations/spotify/callback`
+1. In the app’s **Redirect URIs**, add (must match `.env.local` **exactly**, including scheme and port):
 
-2. Add the same origin under **Redirect URIs** for production when you deploy.
-3. Copy **Client ID** and **Client secret** into `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
-4. Set `SPOTIFY_REDIRECT_URI` to the same callback URL as in the dashboard.
+   `http://127.0.0.1:3000/api/integrations/spotify/callback`
+
+2. Set in `.env.local`:
+
+   - `SPOTIFY_REDIRECT_URI` to that same URL  
+   - `NEXTAUTH_URL=http://127.0.0.1:3000` so the app’s “canonical” origin matches during dev  
+
+3. **Open the app at** `http://127.0.0.1:3000` (not `http://localhost:3000`) while testing Spotify linking,
+   so your session cookie and OAuth redirects stay on the same origin.
+
+4. If you use **Google sign-in**, add `http://127.0.0.1:3000` to **Authorized JavaScript origins** and add
+   redirect URI `http://127.0.0.1:3000/api/auth/callback/google` so Google matches the same origin.
+
+5. Copy **Client ID** and **Client secret** into `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
+
+6. For production, add an **https** redirect URI (e.g. `https://your-domain.com/api/integrations/spotify/callback`).
 
 ### Last.fm account linking
 
@@ -111,7 +126,9 @@ Create an API key on [Last.fm API account](https://www.last.fm/api/account/creat
 
 1. Set **Authorized callback URL** to the same value as `LASTFM_REDIRECT_URI`, e.g.:
 
-   `http://localhost:3000/api/integrations/lastfm/callback`
+   `http://127.0.0.1:3000/api/integrations/lastfm/callback`
+
+   (Use the same host/port as `NEXTAUTH_URL` so sessions stay consistent.)
 
 2. Put **API Key** and **Shared secret** into `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 
