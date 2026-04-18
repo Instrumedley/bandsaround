@@ -69,3 +69,40 @@ export async function fetchSpotifyProfile(accessToken: string): Promise<SpotifyP
 
   return json as SpotifyProfile;
 }
+
+export async function refreshSpotifyAccessToken(refreshToken: string): Promise<SpotifyTokenResponse> {
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Spotify OAuth environment variables are not configured.");
+  }
+
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+  });
+
+  const basic = Buffer.from(`${clientId}:${clientSecret}`, "utf8").toString("base64");
+
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Basic ${basic}`,
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Spotify token refresh failed: ${response.status} ${text}`);
+  }
+
+  const json: unknown = await response.json();
+  if (!json || typeof json !== "object") {
+    throw new Error("Spotify refresh response was not valid JSON.");
+  }
+
+  return json as SpotifyTokenResponse;
+}
