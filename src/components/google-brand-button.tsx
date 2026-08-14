@@ -2,7 +2,8 @@
 
 type GoogleBrandButtonProps = {
   label: "Sign in with Google" | "Sign up with Google";
-  onClick: () => void;
+  onClick?: () => void;
+  type?: "button" | "submit";
   disabled?: boolean;
 };
 
@@ -10,10 +11,10 @@ type GoogleBrandButtonProps = {
  * Dark, pill-shaped button aligned with Google Sign-in branding guidance.
  * @see https://developers.google.com/identity/branding-guidelines
  */
-export function GoogleBrandButton({ label, onClick, disabled }: GoogleBrandButtonProps) {
+export function GoogleBrandButton({ label, onClick, type = "button", disabled }: GoogleBrandButtonProps) {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className="google-brand-btn flex w-full items-center justify-center gap-2.5 rounded-full border border-[#8E918F] bg-[#131314] px-3 py-2.5 text-sm font-medium leading-5 text-[#E3E3E3] transition-colors hover:bg-[#1c1c1e] disabled:cursor-not-allowed disabled:opacity-50"

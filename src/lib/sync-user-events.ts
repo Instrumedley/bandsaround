@@ -1,0 +1,1 @@
+export const DEFAULT_EVENT_WINDOW_MONTHS = 6;

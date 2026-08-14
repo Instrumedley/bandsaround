@@ -3,6 +3,7 @@ import { getAppBaseUrl } from "@/lib/app-url";
 import { setSpotifyIntegration } from "@/lib/integration-store";
 import { verifyOAuthState } from "@/lib/oauth-state";
 import { exchangeSpotifyAuthorizationCode, fetchSpotifyProfile } from "@/lib/spotify-token";
+import { syncSpotifyTasteProfile } from "@/lib/sync-taste-profile";
 
 export async function GET(request: Request) {
   const base = getAppBaseUrl();
@@ -49,7 +50,12 @@ export async function GET(request: Request) {
       displayName: profile.display_name,
     });
 
-    return NextResponse.redirect(new URL("/settings?spotify=connected", base));
+    try {
+      await syncSpotifyTasteProfile(userId);
+      return NextResponse.redirect(new URL("/settings?spotify=connected&taste=synced", base));
+    } catch {
+      return NextResponse.redirect(new URL("/settings?spotify=connected&taste=error", base));
+    }
   } catch {
     return NextResponse.redirect(
       new URL("/settings?spotify=error&spotify_reason=token_exchange", base),
