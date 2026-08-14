@@ -8,4 +8,7 @@ export type ConcertEvent = {
   date: string;
   lat: number;
   lng: number;
+  ticketUrl?: string;
+  source?: "bandsintown";
+  sourceEventId?: string;
 };

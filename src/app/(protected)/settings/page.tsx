@@ -4,6 +4,8 @@ import { getServerAuthSession } from "@/auth";
 import { LastFmArtistsPanel } from "@/components/taste/lastfm-artists-panel";
 import { SpotifyArtistsPanel } from "@/components/taste/spotify-artists-panel";
 import { getIntegrations } from "@/lib/integration-store";
+import { getTasteProfile } from "@/lib/taste-profile-store";
+import { TASTE_PROFILE_MAX_ARTISTS } from "@/lib/taste-types";
 
 type SettingsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -16,6 +18,13 @@ function firstParam(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
+function formatSyncedAt(iso: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(iso));
+}
+
 export default async function SettingsPage({ searchParams }: SettingsPageProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) {
@@ -23,20 +32,71 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
   }
 
   const params = await searchParams;
-  const integrations = await getIntegrations(session.user.id);
+  const [integrations, tasteProfile] = await Promise.all([
+    getIntegrations(session.user.id),
+    getTasteProfile(session.user.id),
+  ]);
 
   const spotifyStatus = firstParam(params.spotify);
   const lastfmStatus = firstParam(params.lastfm);
+  const tasteStatus = firstParam(params.taste);
   const spotifyReason = firstParam(params.spotify_reason);
   const lastfmReason = firstParam(params.lastfm_reason);
+  const tasteReason = firstParam(params.taste_reason);
 
   return (
     <section className="rounded-xl border border-slate-800 bg-slate-900 p-6">
       <h1 className="text-2xl font-semibold">Account Settings</h1>
       <p className="mt-2 text-sm text-slate-300">
-        Connect Spotify and Last.fm to import your listening profile. After linking, your top artists
-        appear below each service for a quick taste check.
+        Connect Spotify and Last.fm to import your listening profile. Your unified taste profile (top{" "}
+        {TASTE_PROFILE_MAX_ARTISTS} from Spotify for now) powers concert filtering on the dashboard.
       </p>
+
+      {tasteStatus === "synced" ? (
+        <p className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+          Taste profile synced successfully.
+        </p>
+      ) : null}
+      {tasteStatus === "error" ? (
+        <p className="mt-4 rounded-md border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-100">
+          Taste profile sync failed
+          {tasteReason ? `: ${tasteReason}` : "."}
+        </p>
+      ) : null}
+
+      <div className="mt-6 rounded-lg border border-slate-800 bg-slate-950/40 p-4">
+        <h2 className="text-lg font-semibold text-slate-100">Unified taste profile</h2>
+        {tasteProfile ? (
+          <div className="mt-3 space-y-3 text-sm text-slate-300">
+            <p>
+              <span className="font-medium text-slate-100">{tasteProfile.artists.length} artists</span>{" "}
+              from Spotify, last synced {formatSyncedAt(tasteProfile.syncedAt)}.
+            </p>
+            <p className="text-xs text-slate-400">
+              Top artists:{" "}
+              {tasteProfile.artists
+                .slice(0, 5)
+                .map((artist) => artist.name)
+                .join(", ")}
+              {tasteProfile.artists.length > 5 ? "…" : ""}
+            </p>
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-slate-400">
+            No taste profile yet. Connect Spotify below; it syncs automatically on connect, or use Refresh.
+          </p>
+        )}
+        {integrations.spotify ? (
+          <form action="/api/taste/sync" method="post" className="mt-4">
+            <button
+              type="submit"
+              className="rounded-md border border-cyan-500/40 bg-cyan-600/20 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-600/30"
+            >
+              Refresh taste profile
+            </button>
+          </form>
+        ) : null}
+      </div>
 
       {spotifyStatus === "connected" ? (
         <p className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
@@ -154,7 +214,8 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
 
       <p className="mt-8 text-xs text-slate-500">
         Tokens are stored locally in <code className="text-slate-400">data/user-integrations.json</code>{" "}
-        for development. Use a secrets manager and database in production.
+        and taste profiles in <code className="text-slate-400">data/taste-profiles.json</code> for
+        development. Use a secrets manager and database in production.
       </p>
     </section>
   );

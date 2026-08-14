@@ -50,6 +50,10 @@ Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (recommended when using Spot
 - Root route `/` redirects to `/login` (or `/dashboard` if authenticated)
 - Settings page can **connect Spotify** and **Last.fm** (OAuth / web auth); tokens stored locally in
   `data/user-integrations.json` (see `/data/` gitignore)
+- **Unified taste profile** (Spotify-only for now): top 50 artists synced from Spotify, stored in
+  `data/taste-profiles.json`; auto-syncs on Spotify connect; manual refresh on Settings
+- Dashboard filters concerts by your taste profile using ingested Bandsintown data
+- **Event ingestion (Bandsintown)**: refresh concerts from Settings/Dashboard; stores Europe shows in `data/user-events.json`
 
 ### Auth environment variables
 
@@ -134,6 +138,7 @@ Create an API key on [Last.fm API account](https://www.last.fm/api/account/creat
 
 ## Next implementation steps
 
-- Import and merge Spotify / Last.fm top artists into a taste profile (top 50 cap)
-- Replace mock data with API + database-backed events
-- Add real marker clustering and event detail routes
+- Add event detail routes and richer map popups (ticket links already in list view)
+- Add real marker clustering improvements
+- Add Last.fm into the unified taste profile merge
+- Optional second ingestion provider behind the same interface

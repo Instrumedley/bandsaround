@@ -1,47 +1,36 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import { ConcertSyncPanel } from "@/components/concert-sync-panel";
+import { MAIN_EUROPE_COUNTRIES } from "@/lib/europe-countries";
+import type { TasteProfile } from "@/lib/taste-types";
 import type { ConcertEvent } from "@/types/concert";
 
 type ViewMode = "map" | "list";
 type SortMode = "date" | "artist" | "country";
 
-const MAIN_EUROPE_COUNTRIES = [
-  "Austria",
-  "Belgium",
-  "Czech Republic",
-  "Denmark",
-  "Finland",
-  "France",
-  "Germany",
-  "Ireland",
-  "Italy",
-  "Netherlands",
-  "Norway",
-  "Poland",
-  "Portugal",
-  "Spain",
-  "Sweden",
-  "Switzerland",
-  "United Kingdom",
-] as const;
+type EventsMeta = {
+  syncedAt: string;
+  artistsQueried: number;
+  artistsWithEvents: number;
+  rawEventsTotal: number;
+  dateFrom: string;
+  dateTo: string;
+  syncWarning?: string;
+  sampleError?: string;
+};
+
+type DiscoveryShellProps = {
+  tasteProfile: TasteProfile | null;
+  spotifyConnected: boolean;
+  events: ConcertEvent[];
+  eventsMeta: EventsMeta | null;
+};
 
 const MAP_CLUSTER_THRESHOLD = 10;
 const DEFAULT_MONTH_WINDOW = 6;
-
-const MOCK_EVENTS: ConcertEvent[] = [
-  { id: "1", artist: "Tesseract", artistRank: 3, city: "London", country: "United Kingdom", venue: "Roundhouse", date: "2026-06-18", lat: 51.5074, lng: -0.1278 },
-  { id: "2", artist: "Leprous", artistRank: 11, city: "Oslo", country: "Norway", venue: "Sentrum Scene", date: "2026-07-02", lat: 59.9139, lng: 10.7522 },
-  { id: "3", artist: "Soen", artistRank: 18, city: "Stockholm", country: "Sweden", venue: "Debaser", date: "2026-08-08", lat: 59.3293, lng: 18.0686 },
-  { id: "4", artist: "Vola", artistRank: 7, city: "Copenhagen", country: "Denmark", venue: "Vega", date: "2026-09-11", lat: 55.6761, lng: 12.5683 },
-  { id: "5", artist: "Karnivool", artistRank: 26, city: "Berlin", country: "Germany", venue: "Columbiahalle", date: "2026-06-29", lat: 52.52, lng: 13.405 },
-  { id: "6", artist: "Riverside", artistRank: 34, city: "Warsaw", country: "Poland", venue: "Progresja", date: "2026-05-29", lat: 52.2297, lng: 21.0122 },
-  { id: "7", artist: "Haken", artistRank: 9, city: "Paris", country: "France", venue: "Bataclan", date: "2026-06-09", lat: 48.8566, lng: 2.3522 },
-  { id: "8", artist: "The Pineapple Thief", artistRank: 42, city: "Amsterdam", country: "Netherlands", venue: "Melkweg", date: "2026-08-14", lat: 52.3676, lng: 4.9041 },
-  { id: "9", artist: "Agent Fresco", artistRank: 51, city: "Madrid", country: "Spain", venue: "La Riviera", date: "2026-07-19", lat: 40.4168, lng: -3.7038 },
-  { id: "10", artist: "Porcupine Tree", artistRank: 1, city: "Milan", country: "Italy", venue: "Alcatraz", date: "2026-05-22", lat: 45.4642, lng: 9.19 },
-];
 
 function addMonths(baseDate: Date, months: number): Date {
   const result = new Date(baseDate);
@@ -49,12 +38,24 @@ function addMonths(baseDate: Date, months: number): Date {
   return result;
 }
 
+function formatSyncedAt(iso: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(iso));
+}
+
 const ConcertMap = dynamic(
   async () => (await import("@/components/concert-map")).ConcertMap,
   { ssr: false },
 );
 
-export function DiscoveryShell() {
+export function DiscoveryShell({
+  tasteProfile,
+  spotifyConnected,
+  events,
+  eventsMeta,
+}: DiscoveryShellProps) {
   const now = new Date();
   const defaultDateTo = addMonths(now, DEFAULT_MONTH_WINDOW);
 
@@ -65,32 +66,34 @@ export function DiscoveryShell() {
   const [excludedCountries, setExcludedCountries] = useState<string[]>([]);
 
   const filteredEvents = useMemo(() => {
+    if (!tasteProfile) {
+      return [];
+    }
+
     const from = new Date(dateFrom);
     const to = new Date(dateTo);
 
-    return MOCK_EVENTS.filter((event) => {
-      if (event.artistRank > 50) {
-        return false;
-      }
+    return events
+      .filter((event) => {
+        if (excludedCountries.includes(event.country)) {
+          return false;
+        }
 
-      if (excludedCountries.includes(event.country)) {
-        return false;
-      }
+        const eventDate = new Date(event.date);
+        return eventDate >= from && eventDate <= to;
+      })
+      .sort((a, b) => {
+        if (sortMode === "artist") {
+          return a.artist.localeCompare(b.artist);
+        }
 
-      const eventDate = new Date(event.date);
-      return eventDate >= from && eventDate <= to;
-    }).sort((a, b) => {
-      if (sortMode === "artist") {
-        return a.artist.localeCompare(b.artist);
-      }
+        if (sortMode === "country") {
+          return a.country.localeCompare(b.country);
+        }
 
-      if (sortMode === "country") {
-        return a.country.localeCompare(b.country);
-      }
-
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
-  }, [dateFrom, dateTo, excludedCountries, sortMode]);
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+  }, [tasteProfile, events, dateFrom, dateTo, excludedCountries, sortMode]);
 
   const shouldCluster = filteredEvents.length > MAP_CLUSTER_THRESHOLD;
 
@@ -100,9 +103,57 @@ export function DiscoveryShell() {
         <p className="text-sm uppercase tracking-[0.18em] text-cyan-300">Bands Around MVP</p>
         <h1 className="text-3xl font-semibold">Europe Concert Discovery</h1>
         <p className="text-sm text-slate-300">
-          Default scope is main Europe countries, upcoming 6 months, and top 50 imported artists.
+          Upcoming concerts in main Europe countries for your top 50 Spotify artists, sourced from
+          Bandsintown.
         </p>
       </header>
+
+      {!tasteProfile ? (
+        <section className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+          {!spotifyConnected ? (
+            <p>
+              Connect Spotify in{" "}
+              <Link href="/settings" className="font-medium underline">
+                Settings
+              </Link>{" "}
+              to build your taste profile and fetch concerts for your top artists.
+            </p>
+          ) : (
+            <p>
+              Spotify is connected but your taste profile has not been synced yet. Open{" "}
+              <Link href="/settings" className="font-medium underline">
+                Settings
+              </Link>{" "}
+              and use <span className="font-medium">Refresh taste profile</span>.
+            </p>
+          )}
+        </section>
+      ) : (
+        <section className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p>
+                Taste profile:{" "}
+                <span className="font-medium">{tasteProfile.artists.length} artists</span>, last synced{" "}
+                {formatSyncedAt(tasteProfile.syncedAt)}.
+              </p>
+              {eventsMeta ? (
+                <p className="mt-2">
+                  Events cache:{" "}
+                  <span className="font-medium">{events.length} Europe shows</span> from{" "}
+                  {eventsMeta.artistsWithEvents}/{eventsMeta.artistsQueried} artists, synced{" "}
+                  {formatSyncedAt(eventsMeta.syncedAt)} ({eventsMeta.dateFrom} to {eventsMeta.dateTo}).
+                </p>
+              ) : (
+                <p className="mt-2 text-emerald-200/80">
+                  No concert data yet. Use <span className="font-medium">Refresh concerts</span> below.
+                </p>
+              )}
+            </div>
+            <ConcertSyncPanel />
+          </div>
+        </section>
+      )}
 
       <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="mb-4 flex flex-wrap gap-2">
@@ -187,7 +238,16 @@ export function DiscoveryShell() {
         </div>
       </section>
 
-      {viewMode === "map" ? (
+      {!tasteProfile ? (
+        <section className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-sm text-slate-300">
+          Connect and sync Spotify, then refresh concerts to see results here.
+        </section>
+      ) : !eventsMeta ? (
+        <section className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-sm text-slate-300">
+          Your taste profile is ready. Click <span className="font-medium">Refresh concerts</span> to
+          fetch upcoming Europe shows from Bandsintown.
+        </section>
+      ) : viewMode === "map" ? (
         <section className="space-y-2 rounded-xl border border-slate-800 bg-slate-900 p-4">
           <div className="flex items-center justify-between text-sm text-slate-300">
             <p>
@@ -197,32 +257,61 @@ export function DiscoveryShell() {
                 : "(one pin per event)"}
             </p>
           </div>
-          <ConcertMap events={filteredEvents} shouldCluster={shouldCluster} />
+          {filteredEvents.length === 0 ? (
+            <p className="text-sm text-slate-400">
+              No Europe concerts match your filters. Try widening the date range or refreshing concerts.
+            </p>
+          ) : (
+            <ConcertMap events={filteredEvents} shouldCluster={shouldCluster} />
+          )}
         </section>
       ) : (
         <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-left text-slate-300">
-                <th className="py-2">Date</th>
-                <th className="py-2">Band</th>
-                <th className="py-2">Country</th>
-                <th className="py-2">City</th>
-                <th className="py-2">Venue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEvents.map((event) => (
-                <tr key={event.id} className="border-b border-slate-800">
-                  <td className="py-2">{event.date}</td>
-                  <td className="py-2">{event.artist}</td>
-                  <td className="py-2">{event.country}</td>
-                  <td className="py-2">{event.city}</td>
-                  <td className="py-2">{event.venue}</td>
+          {filteredEvents.length === 0 ? (
+            <p className="text-sm text-slate-400">
+              No Europe concerts match your filters in this date range.
+            </p>
+          ) : (
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-left text-slate-300">
+                  <th className="py-2">Date</th>
+                  <th className="py-2">Band</th>
+                  <th className="py-2">Rank</th>
+                  <th className="py-2">Country</th>
+                  <th className="py-2">City</th>
+                  <th className="py-2">Venue</th>
+                  <th className="py-2">Tickets</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredEvents.map((event) => (
+                  <tr key={event.id} className="border-b border-slate-800">
+                    <td className="py-2">{event.date}</td>
+                    <td className="py-2">{event.artist}</td>
+                    <td className="py-2">#{event.artistRank}</td>
+                    <td className="py-2">{event.country}</td>
+                    <td className="py-2">{event.city}</td>
+                    <td className="py-2">{event.venue}</td>
+                    <td className="py-2">
+                      {event.ticketUrl ? (
+                        <a
+                          href={event.ticketUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-cyan-300 hover:underline"
+                        >
+                          Link
+                        </a>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </section>
       )}
     </>

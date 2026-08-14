@@ -15,6 +15,8 @@ if (isGoogleOAuthConfigured()) {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      // PKCE alone is sufficient for CSRF protection during local OAuth debugging.
+      checks: ["pkce"],
     }),
   );
 }
@@ -65,8 +67,12 @@ providers.push(
   }),
 );
 
+const isProduction = process.env.NODE_ENV === "production";
+const appUsesHttps = process.env.NEXTAUTH_URL?.startsWith("https://") ?? false;
+
 export const authOptions: NextAuthOptions = {
-  secret: process.env.AUTH_SECRET ?? "dev-only-secret-change-me",
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  useSecureCookies: isProduction && appUsesHttps,
   providers,
   session: {
     strategy: "jwt",

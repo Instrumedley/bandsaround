@@ -48,6 +48,11 @@ export function ConcertMap({ events, shouldCluster }: ConcertMapProps) {
                   <p>{event.city}, {event.country}</p>
                   <p>{event.venue}</p>
                   <p>{event.date}</p>
+                  {event.ticketUrl ? (
+                    <a href={event.ticketUrl} target="_blank" rel="noreferrer" className="text-cyan-700 underline">
+                      Tickets
+                    </a>
+                  ) : null}
                 </div>
               </Popup>
             </Marker>

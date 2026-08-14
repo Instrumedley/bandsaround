@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { GoogleBrandButton } from "@/components/google-brand-button";
+import { GoogleOAuthForm } from "@/components/google-oauth-form";
 
 type LoginFormProps = {
   callbackUrl: string;
@@ -42,13 +42,6 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
 
     router.push(result?.url ?? callbackUrl);
     router.refresh();
-  }
-
-  function handleGoogleAuth() {
-    if (!googleOAuthConfigured) {
-      return;
-    }
-    void signIn("google", { callbackUrl });
   }
 
   return (
@@ -127,7 +120,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
           </div>
 
           {googleOAuthConfigured ? (
-            <GoogleBrandButton label="Sign in with Google" onClick={handleGoogleAuth} />
+            <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign in with Google" />
           ) : (
             <p className="text-center text-xs text-slate-500">
               Google sign-in is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET
@@ -154,7 +147,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
           </Link>
 
           {googleOAuthConfigured ? (
-            <GoogleBrandButton label="Sign up with Google" onClick={handleGoogleAuth} />
+            <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign up with Google" />
           ) : (
             <p className="text-center text-xs text-slate-500">
               Google sign-up uses the same OAuth flow as sign-in once OAuth env vars are set.

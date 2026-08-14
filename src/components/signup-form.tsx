@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { GoogleBrandButton } from "@/components/google-brand-button";
+import { GoogleOAuthForm } from "@/components/google-oauth-form";
 
 type SignupFormProps = {
   callbackUrl: string;
@@ -70,13 +70,6 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
     router.refresh();
   }
 
-  function handleGoogleSignup() {
-    if (!googleOAuthConfigured) {
-      return;
-    }
-    void signIn("google", { callbackUrl });
-  }
-
   return (
     <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
       <h1 className="text-2xl font-semibold">Create your account</h1>
@@ -87,7 +80,7 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
 
       <div className="mt-6 flex flex-col gap-3">
         {googleOAuthConfigured ? (
-          <GoogleBrandButton label="Sign up with Google" onClick={handleGoogleSignup} />
+          <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign up with Google" />
         ) : (
           <p className="text-center text-xs text-slate-500">
             Google sign-up is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET in{" "}
