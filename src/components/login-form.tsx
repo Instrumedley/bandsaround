@@ -45,14 +45,14 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
   }
 
   return (
-    <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
+    <div className="w-full max-w-md rounded-xl border border-brand-border bg-brand-surface p-6">
       <section aria-labelledby="sign-in-heading">
         <h1 id="sign-in-heading" className="text-2xl font-semibold tracking-tight">
           Sign-in
         </h1>
 
         {showRegisteredNotice ? (
-          <p className="mt-3 text-sm text-emerald-300" role="status">
+          <p className="mt-3 text-sm text-brand-accent" role="status">
             Account created. Please sign in.
           </p>
         ) : null}
@@ -64,7 +64,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
             aria-expanded={emailSignInOpen}
             aria-controls="email-sign-in-panel"
             onClick={() => setEmailSignInOpen((open) => !open)}
-            className="flex w-full items-center justify-center rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-center text-sm font-semibold text-slate-100 hover:bg-slate-700"
+            className="flex w-full items-center justify-center rounded-lg border border-brand-border/70 bg-brand-elevated px-4 py-3 text-center text-sm font-semibold text-brand-cream hover:bg-brand-border/50"
           >
             Sign in with email and password
           </button>
@@ -76,7 +76,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
             hidden={!emailSignInOpen}
             className={
               emailSignInOpen
-                ? "rounded-lg border border-slate-700 bg-slate-950/80 p-4"
+                ? "rounded-lg border border-brand-border/90 bg-brand-ink/80 p-4"
                 : undefined
             }
           >
@@ -88,7 +88,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2"
+                    className="rounded-md border border-brand-border/90 bg-brand-ink px-3 py-2"
                     required
                     autoComplete="email"
                   />
@@ -100,7 +100,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2"
+                    className="rounded-md border border-brand-border/90 bg-brand-ink px-3 py-2"
                     required
                     autoComplete="current-password"
                   />
@@ -111,7 +111,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-md border border-cyan-600/50 bg-cyan-600/20 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-600/30 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-md border border-brand-accent/50 bg-brand-accent/20 px-4 py-2 text-sm font-semibold text-brand-accent hover:bg-brand-accent/30 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmitting ? "Signing in..." : "Sign in"}
                 </button>
@@ -122,26 +122,26 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
           {googleOAuthConfigured ? (
             <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign in with Google" />
           ) : (
-            <p className="text-center text-xs text-slate-500">
+            <p className="text-center text-xs text-brand-dim/90">
               Google sign-in is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET
-              in <code className="text-slate-400">.env.local</code>.
+              in <code className="text-brand-dim">.env.local</code>.
             </p>
           )}
         </div>
       </section>
 
-      <div className="my-8 h-px bg-slate-700" role="separator" />
+      <div className="my-8 h-px bg-brand-border/50" role="separator" />
 
       <section aria-labelledby="sign-up-heading">
-        <h2 id="sign-up-heading" className="text-lg font-semibold text-slate-100">
+        <h2 id="sign-up-heading" className="text-lg font-semibold text-brand-cream">
           Don&apos;t have an account yet?
         </h2>
-        <p className="mt-1 text-sm text-slate-400">Create one now</p>
+        <p className="mt-1 text-sm text-brand-dim">Create one now</p>
 
         <div className="mt-5 flex flex-col gap-3">
           <Link
             href="/signup"
-            className="flex w-full items-center justify-center rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-center text-sm font-semibold text-slate-100 hover:bg-slate-700"
+            className="flex w-full items-center justify-center rounded-lg border border-brand-border/70 bg-brand-elevated px-4 py-3 text-center text-sm font-semibold text-brand-cream hover:bg-brand-border/50"
           >
             Sign up with email and password
           </Link>
@@ -149,7 +149,7 @@ export function LoginForm({ callbackUrl, googleOAuthConfigured }: LoginFormProps
           {googleOAuthConfigured ? (
             <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign up with Google" />
           ) : (
-            <p className="text-center text-xs text-slate-500">
+            <p className="text-center text-xs text-brand-dim/90">
               Google sign-up uses the same OAuth flow as sign-in once OAuth env vars are set.
             </p>
           )}

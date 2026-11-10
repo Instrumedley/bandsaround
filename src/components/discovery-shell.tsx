@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { ConcertSyncPanel } from "@/components/concert-sync-panel";
 import { MAIN_EUROPE_COUNTRIES } from "@/lib/europe-countries";
-import type { TasteProfile } from "@/lib/taste-types";
+import { TASTE_PROFILE_MAX_ARTISTS, type TasteProfile } from "@/lib/taste-types";
 import type { ConcertEvent } from "@/types/concert";
 
 type ViewMode = "map" | "list";
@@ -100,11 +100,11 @@ export function DiscoveryShell({
   return (
     <>
       <header className="space-y-3">
-        <p className="text-sm uppercase tracking-[0.18em] text-cyan-300">Bands Around MVP</p>
+        <p className="text-sm uppercase tracking-[0.18em] text-brand-accent">Bands Around MVP</p>
         <h1 className="text-3xl font-semibold">Europe Concert Discovery</h1>
-        <p className="text-sm text-slate-300">
-          Upcoming concerts in main Europe countries for your top 50 Spotify artists, sourced from
-          Bandsintown.
+        <p className="text-sm text-brand-muted">
+          Upcoming concerts in main Europe countries for your top {TASTE_PROFILE_MAX_ARTISTS} Spotify
+          artists, sourced from Bandsintown.
         </p>
       </header>
 
@@ -129,7 +129,7 @@ export function DiscoveryShell({
           )}
         </section>
       ) : (
-        <section className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+        <section className="rounded-xl border border-brand-accent/35 bg-brand-accent/10 p-4 text-sm text-brand-cream">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p>
@@ -145,7 +145,7 @@ export function DiscoveryShell({
                   {formatSyncedAt(eventsMeta.syncedAt)} ({eventsMeta.dateFrom} to {eventsMeta.dateTo}).
                 </p>
               ) : (
-                <p className="mt-2 text-emerald-200/80">
+                <p className="mt-2 text-brand-muted">
                   No concert data yet. Use <span className="font-medium">Refresh concerts</span> below.
                 </p>
               )}
@@ -155,18 +155,18 @@ export function DiscoveryShell({
         </section>
       )}
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <section className="rounded-xl border border-brand-border bg-brand-surface p-4">
         <div className="mb-4 flex flex-wrap gap-2">
           <button
             type="button"
-            className={`rounded-md px-3 py-2 text-sm font-medium ${viewMode === "map" ? "bg-cyan-500 text-slate-950" : "bg-slate-800 text-slate-100"}`}
+            className={`rounded-md px-3 py-2 text-sm font-medium ${viewMode === "map" ? "bg-brand-accent text-brand-ink" : "bg-brand-elevated text-brand-cream"}`}
             onClick={() => setViewMode("map")}
           >
             Map view
           </button>
           <button
             type="button"
-            className={`rounded-md px-3 py-2 text-sm font-medium ${viewMode === "list" ? "bg-cyan-500 text-slate-950" : "bg-slate-800 text-slate-100"}`}
+            className={`rounded-md px-3 py-2 text-sm font-medium ${viewMode === "list" ? "bg-brand-accent text-brand-ink" : "bg-brand-elevated text-brand-cream"}`}
             onClick={() => setViewMode("list")}
           >
             List view
@@ -180,7 +180,7 @@ export function DiscoveryShell({
               type="date"
               value={dateFrom}
               onChange={(event) => setDateFrom(event.target.value)}
-              className="rounded-md border border-slate-700 bg-slate-950 px-2 py-2"
+              className="rounded-md border border-brand-border/90 bg-brand-ink px-2 py-2"
             />
           </label>
 
@@ -190,7 +190,7 @@ export function DiscoveryShell({
               type="date"
               value={dateTo}
               onChange={(event) => setDateTo(event.target.value)}
-              className="rounded-md border border-slate-700 bg-slate-950 px-2 py-2"
+              className="rounded-md border border-brand-border/90 bg-brand-ink px-2 py-2"
             />
           </label>
 
@@ -199,7 +199,7 @@ export function DiscoveryShell({
             <select
               value={sortMode}
               onChange={(event) => setSortMode(event.target.value as SortMode)}
-              className="rounded-md border border-slate-700 bg-slate-950 px-2 py-2"
+              className="rounded-md border border-brand-border/90 bg-brand-ink px-2 py-2"
             >
               <option value="date">Date (soonest first)</option>
               <option value="artist">Band name</option>
@@ -227,7 +227,7 @@ export function DiscoveryShell({
                   className={`rounded-full border px-3 py-1 text-xs ${
                     isExcluded
                       ? "border-rose-400 bg-rose-500/20 text-rose-100"
-                      : "border-slate-700 bg-slate-800 text-slate-200"
+                      : "border-brand-border/90 bg-brand-elevated text-brand-cream/95"
                   }`}
                 >
                   {country}
@@ -239,17 +239,17 @@ export function DiscoveryShell({
       </section>
 
       {!tasteProfile ? (
-        <section className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-sm text-slate-300">
+        <section className="rounded-xl border border-brand-border bg-brand-surface p-6 text-sm text-brand-muted">
           Connect and sync Spotify, then refresh concerts to see results here.
         </section>
       ) : !eventsMeta ? (
-        <section className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-sm text-slate-300">
+        <section className="rounded-xl border border-brand-border bg-brand-surface p-6 text-sm text-brand-muted">
           Your taste profile is ready. Click <span className="font-medium">Refresh concerts</span> to
           fetch upcoming Europe shows from Bandsintown.
         </section>
       ) : viewMode === "map" ? (
-        <section className="space-y-2 rounded-xl border border-slate-800 bg-slate-900 p-4">
-          <div className="flex items-center justify-between text-sm text-slate-300">
+        <section className="space-y-2 rounded-xl border border-brand-border bg-brand-surface p-4">
+          <div className="flex items-center justify-between text-sm text-brand-muted">
             <p>
               Showing {filteredEvents.length} event(s){" "}
               {shouldCluster
@@ -258,7 +258,7 @@ export function DiscoveryShell({
             </p>
           </div>
           {filteredEvents.length === 0 ? (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-brand-dim">
               No Europe concerts match your filters. Try widening the date range or refreshing concerts.
             </p>
           ) : (
@@ -266,15 +266,15 @@ export function DiscoveryShell({
           )}
         </section>
       ) : (
-        <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+        <section className="rounded-xl border border-brand-border bg-brand-surface p-4">
           {filteredEvents.length === 0 ? (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-brand-dim">
               No Europe concerts match your filters in this date range.
             </p>
           ) : (
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-left text-slate-300">
+                <tr className="border-b border-brand-border/90 text-left text-brand-muted">
                   <th className="py-2">Date</th>
                   <th className="py-2">Band</th>
                   <th className="py-2">Rank</th>
@@ -286,7 +286,7 @@ export function DiscoveryShell({
               </thead>
               <tbody>
                 {filteredEvents.map((event) => (
-                  <tr key={event.id} className="border-b border-slate-800">
+                  <tr key={event.id} className="border-b border-brand-border">
                     <td className="py-2">{event.date}</td>
                     <td className="py-2">{event.artist}</td>
                     <td className="py-2">#{event.artistRank}</td>
@@ -299,7 +299,7 @@ export function DiscoveryShell({
                           href={event.ticketUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-cyan-300 hover:underline"
+                          className="text-brand-accent hover:underline"
                         >
                           Link
                         </a>

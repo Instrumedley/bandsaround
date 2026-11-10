@@ -71,9 +71,9 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
   }
 
   return (
-    <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
+    <div className="w-full max-w-md rounded-xl border border-brand-border bg-brand-surface p-6">
       <h1 className="text-2xl font-semibold">Create your account</h1>
-      <p className="mt-2 text-sm text-slate-300">
+      <p className="mt-2 text-sm text-brand-muted">
         Sign up with Google or email and password. You can connect Spotify and Last.fm after you sign
         in.
       </p>
@@ -82,19 +82,19 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
         {googleOAuthConfigured ? (
           <GoogleOAuthForm callbackUrl={callbackUrl} label="Sign up with Google" />
         ) : (
-          <p className="text-center text-xs text-slate-500">
+          <p className="text-center text-xs text-brand-dim/90">
             Google sign-up is disabled until you set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET in{" "}
-            <code className="text-slate-400">.env.local</code>.
+            <code className="text-brand-dim">.env.local</code>.
           </p>
         )}
       </div>
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center" aria-hidden>
-          <div className="w-full border-t border-slate-700" />
+          <div className="w-full border-t border-brand-border/90" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase tracking-wide text-slate-500">
-          <span className="bg-slate-900 px-2">Or register with email</span>
+        <div className="relative flex justify-center text-xs uppercase tracking-wide text-brand-dim/90">
+          <span className="bg-brand-surface px-2">Or register with email</span>
         </div>
       </div>
 
@@ -105,7 +105,7 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2"
+            className="rounded-md border border-brand-border/90 bg-brand-ink px-3 py-2"
             required
             autoComplete="email"
           />
@@ -117,7 +117,7 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2"
+            className="rounded-md border border-brand-border/90 bg-brand-ink px-3 py-2"
             required
             minLength={8}
             autoComplete="new-password"
@@ -130,7 +130,7 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
             type="password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
-            className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2"
+            className="rounded-md border border-brand-border/90 bg-brand-ink px-3 py-2"
             required
             minLength={8}
             autoComplete="new-password"
@@ -142,15 +142,15 @@ export function SignupForm({ callbackUrl, googleOAuthConfigured }: SignupFormPro
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-md bg-brand-accent px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Creating account..." : "Create account"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-400">
+      <p className="mt-6 text-center text-sm text-brand-dim">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-cyan-400 hover:underline">
+        <Link href="/login" className="font-medium text-brand-accent hover:underline">
           Sign in
         </Link>
       </p>

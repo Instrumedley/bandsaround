@@ -21,7 +21,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   const googleOAuthConfigured = isGoogleOAuthConfigured();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+    <main className="flex min-h-screen items-center justify-center bg-brand-ink p-6 text-brand-cream">
       <SignupForm
         callbackUrl={safeCallbackUrl}
         googleOAuthConfigured={googleOAuthConfigured}

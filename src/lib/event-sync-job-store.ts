@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-export type SyncLogLevel = "info" | "warn" | "error";
+export type SyncLogLevel = "info" | "warn" | "error" | "success";
 
 export type SyncLogEntry = {
   at: string;

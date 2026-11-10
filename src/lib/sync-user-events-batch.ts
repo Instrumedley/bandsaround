@@ -449,7 +449,7 @@ async function processEventsBatch(job: EventSyncJob): Promise<SyncStepResult> {
 
       nextJob = appendSyncLog(
         nextJob,
-        result.events.length > 0 ? "info" : "warn",
+        result.events.length > 0 ? "success" : "warn",
         `${artist.name}: ${result.events.length} Europe show(s) kept (${result.rawEventsCount} raw in window).`,
       );
       nextJob = {

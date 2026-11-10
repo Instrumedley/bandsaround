@@ -32,7 +32,7 @@ Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (recommended when using Spot
 - Country exclusion filters
 - List sorting by date, band name, or country
 - Pin labels (band name text) on map
-- Top-50 artist cap applied in filtering
+- Taste profile artist cap (`TASTE_PROFILE_MAX_ARTISTS`, default 150) applied in filtering
 - Configurable map clustering threshold constant (`MAP_CLUSTER_THRESHOLD`, default `10`)
 
 ## Auth foundation
@@ -50,7 +50,7 @@ Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (recommended when using Spot
 - Root route `/` redirects to `/login` (or `/dashboard` if authenticated)
 - Settings page can **connect Spotify** and **Last.fm** (OAuth / web auth); tokens stored locally in
   `data/user-integrations.json` (see `/data/` gitignore)
-- **Unified taste profile** (Spotify-only for now): top 50 artists synced from Spotify, stored in
+- **Unified taste profile** (Spotify-only for now): top 150 artists synced from Spotify, stored in
   `data/taste-profiles.json`; auto-syncs on Spotify connect; manual refresh on Settings
 - Dashboard filters concerts by your taste profile using ingested Bandsintown data
 - **Event ingestion (Bandsintown)**: refresh concerts from Settings/Dashboard; stores Europe shows in `data/user-events.json`
@@ -135,6 +135,21 @@ Create an API key on [Last.fm API account](https://www.last.fm/api/account/creat
    (Use the same host/port as `NEXTAUTH_URL` so sessions stay consistent.)
 
 2. Put **API Key** and **Shared secret** into `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
+
+## Concert sync (Bandsintown web)
+
+Ingestion uses the public Bandsintown website (search + artist pages), not the official REST API.
+No `BANDSINTOWN_APP_ID` is required. Requests are paced and cached to keep volume low.
+
+**Workflow on the dashboard**
+
+1. Connect Spotify on **Settings** and refresh your taste profile (top 150 artists).
+2. **Collect artist URLs** — one-time Bandsintown lookup per artist; stored in `data/bandsintown-artists.json` (shared across users on this instance).
+3. **Refresh concerts** — parses cached artist pages for Europe shows (next 6 months by default). Per-artist tour data is reused for **30 days** unless you force refresh.
+
+If Cloudflare blocks a request, wait a few minutes and retry. The sync panel logs each step.
+
+Use branch `pof/bandsintown-main` (or merge it into `main`) for this ingestion stack.
 
 ## Next implementation steps
 

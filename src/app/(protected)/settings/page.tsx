@@ -45,15 +45,15 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
   const tasteReason = firstParam(params.taste_reason);
 
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+    <section className="rounded-xl border border-brand-border bg-brand-surface p-6">
       <h1 className="text-2xl font-semibold">Account Settings</h1>
-      <p className="mt-2 text-sm text-slate-300">
+      <p className="mt-2 text-sm text-brand-muted">
         Connect Spotify and Last.fm to import your listening profile. Your unified taste profile (top{" "}
         {TASTE_PROFILE_MAX_ARTISTS} from Spotify for now) powers concert filtering on the dashboard.
       </p>
 
       {tasteStatus === "synced" ? (
-        <p className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+        <p className="mt-4 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-2 text-sm text-brand-cream">
           Taste profile synced successfully.
         </p>
       ) : null}
@@ -64,15 +64,15 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         </p>
       ) : null}
 
-      <div className="mt-6 rounded-lg border border-slate-800 bg-slate-950/40 p-4">
-        <h2 className="text-lg font-semibold text-slate-100">Unified taste profile</h2>
+      <div className="mt-6 rounded-lg border border-brand-border bg-brand-ink/40 p-4">
+        <h2 className="text-lg font-semibold text-brand-cream">Unified taste profile</h2>
         {tasteProfile ? (
-          <div className="mt-3 space-y-3 text-sm text-slate-300">
+          <div className="mt-3 space-y-3 text-sm text-brand-muted">
             <p>
-              <span className="font-medium text-slate-100">{tasteProfile.artists.length} artists</span>{" "}
+              <span className="font-medium text-brand-cream">{tasteProfile.artists.length} artists</span>{" "}
               from Spotify, last synced {formatSyncedAt(tasteProfile.syncedAt)}.
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-brand-dim">
               Top artists:{" "}
               {tasteProfile.artists
                 .slice(0, 5)
@@ -82,7 +82,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
             </p>
           </div>
         ) : (
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-brand-dim">
             No taste profile yet. Connect Spotify below; it syncs automatically on connect, or use Refresh.
           </p>
         )}
@@ -90,7 +90,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           <form action="/api/taste/sync" method="post" className="mt-4">
             <button
               type="submit"
-              className="rounded-md border border-cyan-500/40 bg-cyan-600/20 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-600/30"
+              className="rounded-md border border-brand-accent/40 bg-brand-accent/20 px-4 py-2 text-sm font-semibold text-brand-accent hover:bg-brand-accent/30"
             >
               Refresh taste profile
             </button>
@@ -99,12 +99,12 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       </div>
 
       {spotifyStatus === "connected" ? (
-        <p className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+        <p className="mt-4 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-2 text-sm text-brand-cream">
           Spotify connected successfully.
         </p>
       ) : null}
       {spotifyStatus === "disconnected" ? (
-        <p className="mt-4 rounded-md border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-200">
+        <p className="mt-4 rounded-md border border-brand-border/70 bg-brand-elevated px-3 py-2 text-sm text-brand-cream/95">
           Spotify disconnected.
         </p>
       ) : null}
@@ -122,12 +122,12 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       ) : null}
 
       {lastfmStatus === "connected" ? (
-        <p className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+        <p className="mt-4 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-2 text-sm text-brand-cream">
           Last.fm connected successfully.
         </p>
       ) : null}
       {lastfmStatus === "disconnected" ? (
-        <p className="mt-4 rounded-md border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-200">
+        <p className="mt-4 rounded-md border border-brand-border/70 bg-brand-elevated px-3 py-2 text-sm text-brand-cream/95">
           Last.fm disconnected.
         </p>
       ) : null}
@@ -145,14 +145,14 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       ) : null}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-4">
-          <h2 className="text-lg font-semibold text-slate-100">Spotify</h2>
+        <div className="rounded-lg border border-brand-border bg-brand-ink/40 p-4">
+          <h2 className="text-lg font-semibold text-brand-cream">Spotify</h2>
           {integrations.spotify ? (
             <>
-              <div className="mt-3 space-y-2 text-sm text-slate-300">
+              <div className="mt-3 space-y-2 text-sm text-brand-muted">
                 <p>
                   Connected as{" "}
-                  <span className="font-medium text-slate-100">
+                  <span className="font-medium text-brand-cream">
                     {integrations.spotify.displayName ?? integrations.spotify.spotifyUserId}
                   </span>
                 </p>
@@ -171,7 +171,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
             <div className="mt-3">
               <Link
                 href="/api/integrations/spotify/connect"
-                className="inline-flex rounded-md border border-emerald-500/50 bg-emerald-600/20 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-600/30"
+                className="inline-flex rounded-md border border-brand-accent/50 bg-brand-accent/25 px-4 py-2 text-sm font-semibold text-brand-cream hover:bg-brand-accent/35"
               >
                 Connect Spotify
               </Link>
@@ -179,14 +179,14 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           )}
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-4">
-          <h2 className="text-lg font-semibold text-slate-100">Last.fm</h2>
+        <div className="rounded-lg border border-brand-border bg-brand-ink/40 p-4">
+          <h2 className="text-lg font-semibold text-brand-cream">Last.fm</h2>
           {integrations.lastfm ? (
             <>
-              <div className="mt-3 space-y-2 text-sm text-slate-300">
+              <div className="mt-3 space-y-2 text-sm text-brand-muted">
                 <p>
                   Connected as{" "}
-                  <span className="font-medium text-slate-100">{integrations.lastfm.username}</span>
+                  <span className="font-medium text-brand-cream">{integrations.lastfm.username}</span>
                 </p>
                 <form action="/api/integrations/lastfm/disconnect" method="post">
                   <button
@@ -212,9 +212,9 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-slate-500">
-        Tokens are stored locally in <code className="text-slate-400">data/user-integrations.json</code>{" "}
-        and taste profiles in <code className="text-slate-400">data/taste-profiles.json</code> for
+      <p className="mt-8 text-xs text-brand-dim/90">
+        Tokens are stored locally in <code className="text-brand-dim">data/user-integrations.json</code>{" "}
+        and taste profiles in <code className="text-brand-dim">data/taste-profiles.json</code> for
         development. Use a secrets manager and database in production.
       </p>
     </section>

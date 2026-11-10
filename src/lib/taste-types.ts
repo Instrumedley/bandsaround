@@ -11,7 +11,7 @@ export type LastFmArtistTasteRow = {
   scrobbles: number;
 };
 
-export const TASTE_PROFILE_MAX_ARTISTS = 50;
+export const TASTE_PROFILE_MAX_ARTISTS = 150;
 
 export type TasteProfileArtist = {
   rank: number;

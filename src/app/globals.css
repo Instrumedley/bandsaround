@@ -1,28 +1,46 @@
 @import "tailwindcss";
 
+/* Palette: ink #080603 · accent-dim #883e00 · accent #f77000 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #080603;
+  --foreground: #f5ebe0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-ink: #080603;
+  --color-brand-surface: #120c08;
+  --color-brand-elevated: #1c1410;
+  --color-brand-border: #4a3020;
+  --color-brand-accent: #f77000;
+  --color-brand-accent-dim: #883e00;
+  --color-brand-cream: #f5ebe0;
+  --color-brand-muted: #c9b5a3;
+  --color-brand-dim: #8a7565;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(247, 112, 0, 0.09), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 100% 50%, rgba(136, 62, 0, 0.06), transparent 45%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::selection {
+  background: rgba(247, 112, 0, 0.35);
+  color: #fff8f0;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(247, 112, 0, 0.55);
+  outline-offset: 1px;
 }
 
 /* Google-branded buttons: Roboto Medium 14/20 per branding guidelines */
@@ -38,12 +56,30 @@ body {
 
 .band-label-pin span {
   border-radius: 9999px;
-  border: 1px solid #22d3ee;
-  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #f77000;
+  background: rgba(8, 6, 3, 0.92);
   padding: 0.2rem 0.6rem;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #ecfeff;
+  color: #ffe8d4;
   white-space: nowrap;
-  box-shadow: 0 3px 10px rgba(8, 145, 178, 0.35);
+  box-shadow: 0 3px 12px rgba(247, 112, 0, 0.4);
+}
+
+/* Leaflet map chrome */
+.leaflet-container {
+  background: #120c08;
+  border: 1px solid #4a3020;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background-color: rgba(247, 112, 0, 0.2);
+}
+
+.marker-cluster div {
+  background-color: rgba(136, 62, 0, 0.92);
+  color: #f5ebe0;
+  border: 1px solid rgba(247, 112, 0, 0.5);
 }

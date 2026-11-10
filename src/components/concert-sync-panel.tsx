@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 type SyncLogEntry = {
   at: string;
-  level: "info" | "warn" | "error";
+  level: "info" | "warn" | "error" | "success";
   message: string;
 };
 
@@ -42,7 +42,10 @@ function logLevelClass(level: SyncLogEntry["level"]): string {
   if (level === "warn") {
     return "text-amber-200";
   }
-  return "text-slate-200";
+  if (level === "success") {
+    return "font-semibold text-brand-accent";
+  }
+  return "text-brand-cream/95";
 }
 
 function phaseLabel(job: SyncJob): string {
@@ -215,7 +218,7 @@ export function ConcertSyncPanel({ disabled = false }: ConcertSyncPanelProps) {
           type="button"
           disabled={disabled || isRunning}
           onClick={() => void runSyncLoop("resolve-urls")}
-          className="rounded-md border border-violet-500/40 bg-violet-600/20 px-4 py-2 text-sm font-semibold text-violet-100 hover:bg-violet-600/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-brand-accent-dim/50 bg-brand-accent-dim/25 px-4 py-2 text-sm font-semibold text-brand-cream hover:bg-brand-accent-dim/35 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isRunning && activeMode === "resolve-urls" ? "Collecting URLs…" : "Collect artist URLs"}
         </button>
@@ -223,7 +226,7 @@ export function ConcertSyncPanel({ disabled = false }: ConcertSyncPanelProps) {
           type="button"
           disabled={disabled || isRunning}
           onClick={() => void runSyncLoop("refresh-events")}
-          className="rounded-md border border-cyan-500/40 bg-cyan-600/20 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-600/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-brand-accent/40 bg-brand-accent/20 px-4 py-2 text-sm font-semibold text-brand-accent hover:bg-brand-accent/30 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isRunning && activeMode === "refresh-events" ? "Refreshing concerts…" : "Refresh concerts"}
         </button>
@@ -238,20 +241,20 @@ export function ConcertSyncPanel({ disabled = false }: ConcertSyncPanelProps) {
         ) : null}
       </div>
 
-      <p className="text-xs text-emerald-200/80">
+      <p className="text-xs text-brand-muted">
         Step 1: collect artist page URLs (one-time per artist). Step 2: refresh concerts from those
         cached URLs only.
       </p>
 
       {isRunning && job ? (
-        <div className="space-y-2 rounded-md border border-cyan-500/30 bg-slate-950/70 p-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-cyan-100">
+        <div className="space-y-2 rounded-md border border-brand-accent/30 bg-brand-ink/70 p-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-brand-accent">
             <p>{phaseLabel(job)}</p>
             <p>{eventsCount} Europe shows so far</p>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+          <div className="h-2 overflow-hidden rounded-full bg-brand-elevated">
             <div
-              className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+              className="h-full rounded-full bg-brand-accent transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -265,7 +268,7 @@ export function ConcertSyncPanel({ disabled = false }: ConcertSyncPanelProps) {
       ) : null}
 
       {job?.status === "completed" ? (
-        <p className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+        <p className="rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-2 text-sm text-brand-cream">
           {job.mode === "resolve-urls"
             ? `URL collection complete (${job.resolveCursor}/${job.totalArtists} artists processed).`
             : `Concert refresh complete: ${job.eventsFound} Europe shows cached.`}
@@ -273,12 +276,12 @@ export function ConcertSyncPanel({ disabled = false }: ConcertSyncPanelProps) {
       ) : null}
 
       {job?.logs.length ? (
-        <div className="rounded-md border border-slate-700 bg-slate-950/80 p-3">
-          <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">Sync log</p>
+        <div className="rounded-md border border-brand-border/90 bg-brand-ink/80 p-3">
+          <p className="mb-2 text-xs uppercase tracking-wide text-brand-dim">Sync log</p>
           <div ref={logContainerRef} className="max-h-48 space-y-1 overflow-y-auto font-mono text-xs">
             {job.logs.map((entry, index) => (
               <p key={`${entry.at}-${index}`} className={logLevelClass(entry.level)}>
-                <span className="text-slate-500">{formatLogTime(entry.at)}</span> {entry.message}
+                <span className="text-brand-dim/90">{formatLogTime(entry.at)}</span> {entry.message}
               </p>
             ))}
           </div>
