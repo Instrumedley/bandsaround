@@ -20,6 +20,9 @@
 # production
 /build
 
+# local scrape/debug HTML dumps
+tmp-*.html
+
 # misc
 .DS_Store
 .idea/
