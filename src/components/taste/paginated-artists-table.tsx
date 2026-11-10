@@ -51,12 +51,12 @@ export function PaginatedArtistsTable({
   }
 
   return (
-    <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/60 p-4">
-      <h3 className="text-base font-semibold text-slate-100">{title}</h3>
-      {description ? <p className="mt-1 text-xs text-slate-400">{description}</p> : null}
+    <div className="mt-4 rounded-lg border border-brand-border bg-brand-ink/60 p-4">
+      <h3 className="text-base font-semibold text-brand-cream">{title}</h3>
+      {description ? <p className="mt-1 text-xs text-brand-dim">{description}</p> : null}
 
       {loading ? (
-        <p className="mt-4 text-sm text-slate-400">Loading artists…</p>
+        <p className="mt-4 text-sm text-brand-dim">Loading artists…</p>
       ) : null}
 
       {error && !loading ? (
@@ -66,19 +66,19 @@ export function PaginatedArtistsTable({
       ) : null}
 
       {!loading && !error && rows.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-400">{emptyMessage}</p>
+        <p className="mt-4 text-sm text-brand-dim">{emptyMessage}</p>
       ) : null}
 
       {!loading && !error && rows.length > 0 ? (
         <>
-          <div className="mt-3 overflow-x-auto rounded-md border border-slate-800">
+          <div className="mt-3 overflow-x-auto rounded-md border border-brand-border">
             <table className="w-full min-w-[480px] border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/80">
+                <tr className="border-b border-brand-border bg-brand-surface/80">
                   {columns.map((col) => (
                     <th
                       key={col.key}
-                      className={`px-3 py-2 font-medium text-slate-300 ${
+                      className={`px-3 py-2 font-medium text-brand-muted ${
                         col.align === "right" ? "text-right tabular-nums" : ""
                       }`}
                     >
@@ -91,12 +91,12 @@ export function PaginatedArtistsTable({
                 {pageRows.map((row, i) => (
                   <tr
                     key={`${currentPage}-${i}`}
-                    className="border-b border-slate-800/80 last:border-b-0"
+                    className="border-b border-brand-border/80 last:border-b-0"
                   >
                     {columns.map((col) => (
                       <td
                         key={col.key}
-                        className={`px-3 py-2 text-slate-200 ${
+                        className={`px-3 py-2 text-brand-cream/95 ${
                           col.align === "right" ? "text-right tabular-nums" : ""
                         }`}
                       >
@@ -109,7 +109,7 @@ export function PaginatedArtistsTable({
             </table>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-brand-dim">
             <span>
               Showing {(currentPage - 1) * pageSize + 1}–
               {Math.min(currentPage * pageSize, rows.length)} of {rows.length}
@@ -119,7 +119,7 @@ export function PaginatedArtistsTable({
                 type="button"
                 disabled={currentPage <= 1}
                 onClick={goPrev}
-                className="rounded border border-slate-600 px-2 py-1 text-slate-200 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded border border-brand-border/70 px-2 py-1 text-brand-cream/95 hover:bg-brand-elevated disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
@@ -130,7 +130,7 @@ export function PaginatedArtistsTable({
                 type="button"
                 disabled={currentPage >= totalPages}
                 onClick={goNext}
-                className="rounded border border-slate-600 px-2 py-1 text-slate-200 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded border border-brand-border/70 px-2 py-1 text-brand-cream/95 hover:bg-brand-elevated disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>
@@ -139,7 +139,7 @@ export function PaginatedArtistsTable({
         </>
       ) : null}
 
-      {footnote ? <p className="mt-3 text-xs text-slate-500">{footnote}</p> : null}
+      {footnote ? <p className="mt-3 text-xs text-brand-dim/90">{footnote}</p> : null}
     </div>
   );
 }

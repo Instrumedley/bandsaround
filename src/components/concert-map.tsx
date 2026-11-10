@@ -49,7 +49,7 @@ export function ConcertMap({ events, shouldCluster }: ConcertMapProps) {
                   <p>{event.venue}</p>
                   <p>{event.date}</p>
                   {event.ticketUrl ? (
-                    <a href={event.ticketUrl} target="_blank" rel="noreferrer" className="text-cyan-700 underline">
+                    <a href={event.ticketUrl} target="_blank" rel="noreferrer" className="text-brand-accent-dim underline">
                       Tickets
                     </a>
                   ) : null}

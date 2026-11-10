@@ -22,8 +22,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const googleOAuthConfigured = isGoogleOAuthConfigured();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
-      <Suspense fallback={<div className="text-sm text-slate-400">Loading...</div>}>
+    <main className="flex min-h-screen items-center justify-center bg-brand-ink p-6 text-brand-cream">
+      <Suspense fallback={<div className="text-sm text-brand-dim">Loading...</div>}>
         <LoginForm
           callbackUrl={safeCallbackUrl}
           googleOAuthConfigured={googleOAuthConfigured}
