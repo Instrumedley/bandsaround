@@ -15,8 +15,6 @@ if (isGoogleOAuthConfigured()) {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-      // PKCE alone is sufficient for CSRF protection during local OAuth debugging.
-      checks: ["pkce"],
     }),
   );
 }

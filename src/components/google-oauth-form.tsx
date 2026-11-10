@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { GoogleBrandButton } from "@/components/google-brand-button";
 
 type GoogleOAuthFormProps = {
@@ -9,42 +10,19 @@ type GoogleOAuthFormProps = {
 };
 
 export function GoogleOAuthForm({ callbackUrl, label }: GoogleOAuthFormProps) {
-  const [csrfToken, setCsrfToken] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    void fetch("/api/auth/csrf")
-      .then((response) => response.json())
-      .then((payload: unknown) => {
-        if (cancelled) {
-          return;
-        }
-        if (
-          payload &&
-          typeof payload === "object" &&
-          "csrfToken" in payload &&
-          typeof (payload as { csrfToken: unknown }).csrfToken === "string"
-        ) {
-          setCsrfToken((payload as { csrfToken: string }).csrfToken);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setCsrfToken(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  function handleGoogleAuth() {
+    setIsStarting(true);
+    void signIn("google", { callbackUrl });
+  }
 
   return (
-    <form action="/api/auth/signin/google" method="POST" className="w-full">
-      <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
-      <input type="hidden" name="callbackUrl" value={callbackUrl} />
-      <GoogleBrandButton label={label} type="submit" disabled={!csrfToken} />
-    </form>
+    <GoogleBrandButton
+      label={label}
+      type="button"
+      disabled={isStarting}
+      onClick={handleGoogleAuth}
+    />
   );
 }
